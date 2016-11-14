@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin: 0px;
+				padding: 0px;
+			}
+			img{
+				width: 640px;
+				height: 378px;
+				margin: 100px auto;
+				display: black;
+			}
+		</style>
+	</head>
+	<body>
+		<img src="img/0.jpg"/ id="img1">
+	</body>
+	<script type="text/javascript">
+		var body =document.body;
+		var img1 =document.querySelector("#img1");
+		var imgCount =77;//77张图片
+		var nowIndex =0;//当前下标
+		var imgs =[];//盛装所有图片
+		var lastImg =null;//上张显示的图片
+		
+		var loadedCount =0;//已经读取的图片个数
+		for(var i=0;i<imgCount;i++){
+			var newImg =new Image();
+			//拼接
+			newImg.src ="img/"+i+".jpg";
+			newImg.onload =function(){
+				body.appendChild(this);
+				
+				//隐藏
+				this.style.display ="none";
+				//添加到图片数组中
+				imgs.push(this);
+				this.onmousedown =function(){
+					return false;
+				}
+				loadedCount++;
+				if(loadedCount ==imgCount){
+					//进行操作
+					onLoad();
+				}
+			}
+		}
+		function onLoad(){
+			//上一张默认为第一张
+			lastImg =imgs[0];
+			lastImg.style.display ="block" ;
+			body.removeChild(img1);
+			//down
+			document.onmousedown =function(e){
+				var event =e||window.event;
+				var startX =event.clientX;
+				//move
+				document.onmousemove =function(e){
+					var event1 =e||window.event;
+					//获取坐标
+					var endX =event1.clientX;
+					//偏差量
+					var i =-parseInt((endX -startX)/10);
+					console.log(i);
+					//显示图片的下标
+					var num =nowIndex + i;
+					//合理化
+					if(num<0){
+						num =76;
+					} else if(num>76){
+						num =0;
+					}
+					//将上一张隐藏  当前的显示
+					if(lastImg !=imgs[num]){
+						lastImg.style.display ="none";
+						imgs[num].style.display ="block";
+						//上一张变成当前的图片
+						lastImg =imgs[num];
+					}
+					//更新坐标
+					nowIndex =num;
+					startX =endX;
+				}
+			}
+			document.onmouseup =function(){
+				document.onmousemove =null;
+			}
+		}
+	</script>
+</html>
